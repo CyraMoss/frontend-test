@@ -80,37 +80,38 @@ export default function ProductPage() {
         <meta name="description" content="Made for a technical test" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen pt-6">
-        
+      <main className="flex flex-col md:flex-row min-h-screen pt-6">
+        <div className="md:flex-1 md:flex justify-center"> 
         {product ? (
-          <div className="flex-1 flex">
+          <div className="">
             <Image
               src={product.imageURL}
               alt="Product Image"
               layout="responsive" // Set the layout to responsive
               width={300} // Set a fixed width for the image
               height={400} // Set a fixed height for the image
-              objectFit="contain" // Adjust the image to maintain its aspect ratio
             />
           </div>
         ) : (
           <div>Loading...</div>
         )}
+        </div>
+        <div className="md:flex-1 md:flex md:flex-col md:pl-4">
+
         {product ? (
   <div className="flex-1 flex flex-col pl-4">
   <div className="product-details">
-    <h2 className="text-2xl font-semibold py-4">{product.title}</h2>
-    <hr />
-    <p className="font-bold py-2"> ${product.price.toFixed(2)}</p>
-    <p>{product.description}</p>
+    <h2 className="text-2xl py-4 border-b-2 border-borderLightGrey">{product.title}</h2>
+    <p className="font-bold py-2 border-b-2 border-borderLightGrey"> ${product.price.toFixed(2)}</p>
+    <p className="mt-6 text-fontSecondary">{product.description}</p>
     <div className="size-options">
-      <h3 className="font-bold py-2">Sizes:</h3>
+      <h3 className="font-semibold text-gray-400 pt-6">Size<span className=" text-requiredStar">*</span></h3>
       <ul className="flex mb-4">
                 {product.sizeOptions.map((size) => (
                   <li
                     key={size.id}
                     className={`p-4 m-2 border-2 hover:opacity-30  ${
-                      selectedSize?.id === size.id ? 'text-black border-black' : 'border-gray-200 text-gray-400'
+                      selectedSize?.id === size.id ? ' text-fontPrimary border-borderDarkGrey' : 'border-borderLightGrey text-fontSecondary'
                     }`}
                     onClick={() => setSelectedSize(size)}
                   >
@@ -119,7 +120,7 @@ export default function ProductPage() {
                 ))}
               </ul>
     </div>
-    <button className="border-2 border-black px-5 py-2 hover:opacity-30 transition duration-200" onClick={handleAddToCart}>
+    <button className="border-2 font-semibold border-black px-5 py-2 hover:bg-fontPrimary hover:text-white transition duration-200" onClick={handleAddToCart}>
       Add to Cart
     </button>
     <div className="error-message text-red-600"></div>
@@ -128,6 +129,7 @@ export default function ProductPage() {
 ) : (
   <div>Loading...</div>
 )}
+</div>
       </main>
     </>
   );
