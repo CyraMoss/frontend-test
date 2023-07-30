@@ -32,26 +32,26 @@ export const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const existingItemIndex = prevItems.findIndex(
         (prevItem) => prevItem.name === item.name && prevItem.size[0]?.id === item.size[0]?.id
       );
-
-      
-    if (existingItemIndex !== -1) {
-      // If the item already exists in the cart, increase its quantity
-      const updatedItems = [...prevItems];
-      if (updatedItems[existingItemIndex]) {
-        updatedItems[existingItemIndex].quantity += 1;
+  
+      if (existingItemIndex !== -1) {
+        // If the item already exists in the cart, increase its quantity
+        const updatedItems = [...prevItems];
+        if (updatedItems[existingItemIndex]) {
+          // Add type assertion to let TypeScript know that the item at existingItemIndex is not undefined
+          updatedItems[existingItemIndex]!.quantity += 1;
+        }
+        return updatedItems;
+      } else {
+        // If the item doesn't exist in the cart, create a new one and add it to the cart
+        const newItem: CartItem = {
+          ...item,
+          quantity: 1, // Set initial quantity to 1
+        };
+        return [...prevItems, newItem];
       }
-      return updatedItems;
-    } else {
-      // If the item doesn't exist in the cart, create a new one and add it to the cart
-      const newItem: CartItem = {
-        ...item,
-        quantity: 1, // Set initial quantity to 1
-      };
-      return [...prevItems, newItem];
-    }
     });
   };
-
+  
   const removeFromCart = (item: CartItem) => {
     setCartItems((prevItems) =>
       prevItems.map((prevItem) =>

@@ -16,7 +16,7 @@ export default function Navbar() {
         My Cart ({cartItems.length})
       </div>
       {isCartOpen && (
-        <div className='cart-dropdown w-1/2 text-xs md:text-lg bg-white absolute top-5 right-0 border border-borderLightGrey shadow-md p-4 min-w-200 z-10'>
+        <div className='cart-dropdown w-full md:w-1/2 m-4 text-xs md:text-lg bg-white absolute top-5 right-0 border border-borderLightGrey shadow-md p-4 min-w-200 z-10'>
           {/* Render the cart items */}
           {cartItems.length > 0 ? (
             cartItems.map((item) => (

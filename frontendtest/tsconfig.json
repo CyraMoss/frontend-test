@@ -27,7 +27,9 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
-    "**/*.mjs"
+    "**/*.mjs",
+    "src",
+    "src/tests/ProductPage.test.js"
   ],
   "exclude": ["node_modules"]
 }
