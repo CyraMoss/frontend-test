@@ -37,6 +37,7 @@ export default function ProductPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen pt-6">
+        
         {product ? (
           <div className="flex-1 flex">
             <Image
