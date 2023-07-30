@@ -15,7 +15,8 @@ interface ProductData {
 
 export default function ProductPage() {
   const [product, setProduct] = useState<ProductData | null>();
-  const { addToCart } = useContext<CartContextType>(CartContext);
+  const { addToCart, cartItems } = useContext<CartContextType>(CartContext);
+  const [selectedSize, setSelectedSize] = useState<{ id: number; label: string } | null>(null);
 
   useEffect(() => {
     // Fetch product information from the API
@@ -23,6 +24,7 @@ export default function ProductPage() {
       try {
         const response = await fetch('https://3sb655pz3a.execute-api.ap-southeast-2.amazonaws.com/live/product');
         const data = await response.json() as ProductData
+        console.log(product)
         setProduct(data); // Update the product state with the fetched data
       } catch (error) {
         console.error('Error fetching product details:', error);
@@ -33,34 +35,34 @@ export default function ProductPage() {
   }, []);
 
   const handleAddToCart = () => {
-    console.log("add to cart clicked")
-    // Check if a size is selected (you might want to update this logic based on your actual size selection UI)
-    const selectedSize = product?.sizeOptions[0]?.label;
+    console.log("add to cart clicked", cartItems);
+    
     if (selectedSize && product) {
-      // Create the item object to add to the cart
-      const itemToAdd: CartItem = {
-        image: product.imageURL,
-        name: product.title,
-        price: product.price,
-        quantity: 1, // Set initial quantity to 1
-        size: selectedSize,
-      };
+      // Find the existing item in the cart with the same product and size
+      const existingItem = cartItems.find(
+        (item) =>
+          item.name === product.title &&
+          item.size.some((size) => size.label === selectedSize?.label)
+      );
+      
 
-      // Call the addToCart function from the CartContext to add the item to the cart
-      addToCart(itemToAdd);
+      if (existingItem) {
+        // If the item already exists in the cart, increase its quantity
+        addToCart({ ...existingItem, quantity: existingItem.quantity + 1 });
+      } else {
+        // If the item doesn't exist in the cart, create a new one and add it to the cart
+        const itemToAdd: CartItem = {
+          image: product.imageURL,
+          name: product.title,
+          price: product.price,
+          quantity: 1, // Set initial quantity to 1
+          size: [selectedSize],
+        };
+        addToCart(itemToAdd);
+      }
 
-      setProduct((prevProduct) => {
-        if (prevProduct) {
-          const updatedSizeOptions = prevProduct.sizeOptions.map((sizeOption, index) => {
-            if (index === 0) {
-              return { ...sizeOption, selected: false };
-            }
-            return sizeOption;
-          });
-          return { ...prevProduct, sizeOptions: updatedSizeOptions };
-        }
-        return prevProduct;
-      });
+      // Reset the selected size
+      setSelectedSize(null);
     } else {
       // Show error message if no size is selected (you might want to handle this differently based on your UI)
       const errorMessage = document.querySelector(".error-message");
@@ -94,28 +96,38 @@ export default function ProductPage() {
         ) : (
           <div>Loading...</div>
         )}
-        {product && (
-          <div className="flex-1 flex flex-col pl-4">
-            <div className="product-details">
-              <h2 className="text-2xl font-semibold py-4">{product.title}</h2>
-              <hr/>
-              <p className="font-bold py-2"> ${product.price.toFixed(2)}</p>
-              <p>{product.description}</p>
-              <div className="size-options">
-                <h3 className="font-bold py-2">Sizes:</h3>
-                <ul className="flex mb-4">
-                  {product.sizeOptions.map((size) => (
-                    <li key={size.id} className="p-4 m-2 border-2 border-black">{size.label}</li>
-                  ))}
-                </ul>
-              </div>
-              <button className="border-2 border-black px-5 py-2" onClick={handleAddToCart}>
-  Add to Cart
-</button>
-              <div className="error-message"></div>
-            </div>
-          </div>
-        )}
+        {product ? (
+  <div className="flex-1 flex flex-col pl-4">
+  <div className="product-details">
+    <h2 className="text-2xl font-semibold py-4">{product.title}</h2>
+    <hr />
+    <p className="font-bold py-2"> ${product.price.toFixed(2)}</p>
+    <p>{product.description}</p>
+    <div className="size-options">
+      <h3 className="font-bold py-2">Sizes:</h3>
+      <ul className="flex mb-4">
+                {product.sizeOptions.map((size) => (
+                  <li
+                    key={size.id}
+                    className={`p-4 m-2 border-2 border-black ${
+                      selectedSize?.id === size.id ? 'bg-blue-500' : ''
+                    }`}
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size.label}
+                  </li>
+                ))}
+              </ul>
+    </div>
+    <button className="border-2 border-black px-5 py-2" onClick={handleAddToCart}>
+      Add to Cart
+    </button>
+    <div className="error-message text-red-600"></div>
+  </div>
+</div>
+) : (
+  <div>Loading...</div>
+)}
       </main>
     </>
   );

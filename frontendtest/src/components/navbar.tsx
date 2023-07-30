@@ -17,17 +17,23 @@ export default function Navbar() {
         <div className='cart-dropdown'>
           {/* Render the cart items */}
           {cartItems.map((item) => (
-            <div key={item.name}>
-              <Image 
-              src={item.image} 
-              alt={item.name}
-              width={50}
-              height={50} 
-            />
-              <p>{item.name}</p>
-              <p>{item.price}</p>
-              <p>{item.size}</p>
-              <p>Quantity: {item.quantity}</p>
+            <div key={item.name} className='flex'>
+              <div>
+                <Image 
+                  src={item.image} 
+                  alt={item.name}
+                  width={50}
+                  height={50} 
+                />
+              </div>
+              <div>
+                <p>{item.name}</p>
+                <p>{item.price}</p>
+                {item.size.map((sizeOption: { id: number; label: string }) => (
+  <p key={sizeOption.id}>Size: {sizeOption.label}</p>
+))}
+                <p>Quantity: {item.quantity}</p>
+              </div>
             </div>
           ))}
         </div>

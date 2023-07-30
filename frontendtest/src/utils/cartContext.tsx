@@ -5,7 +5,7 @@ export interface CartItem  {
   name: string;
   price: number;
   quantity: number;
-  size: string;
+  size: { id: number; label: string }[];
 };
 
 export interface CartContextType  {
@@ -29,14 +29,26 @@ export const CartProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const addToCart = (item: CartItem) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((prevItem) => prevItem.name === item.name);
-      if (existingItem) {
-        return prevItems.map((prevItem) =>
-          prevItem.name === item.name ? { ...prevItem, quantity: prevItem.quantity + 1 } : prevItem
-        );
-      } else {
-        return [...prevItems, { ...item, quantity: 1 }];
+      const existingItemIndex = prevItems.findIndex(
+        (prevItem) => prevItem.name === item.name && prevItem.size[0]?.id === item.size[0]?.id
+      );
+
+      
+    if (existingItemIndex !== -1) {
+      // If the item already exists in the cart, increase its quantity
+      const updatedItems = [...prevItems];
+      if (updatedItems[existingItemIndex]) {
+        updatedItems[existingItemIndex].quantity += 1;
       }
+      return updatedItems;
+    } else {
+      // If the item doesn't exist in the cart, create a new one and add it to the cart
+      const newItem: CartItem = {
+        ...item,
+        quantity: 1, // Set initial quantity to 1
+      };
+      return [...prevItems, newItem];
+    }
     });
   };
 
