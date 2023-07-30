@@ -18,6 +18,13 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+
+  images: {
+    domains: [
+      'drive.google.com',
+    'mrdevelopertestassets.s3.ap-southeast-2.amazonaws.com'
+    ],
+  },
 };
 
 export default config;
