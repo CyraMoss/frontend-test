@@ -3,12 +3,12 @@ import React, { createContext, useState, type PropsWithChildren } from 'react';
 export interface CartItem  {
   image: string;
   name: string;
-  price: string;
+  price: number;
   quantity: number;
   size: string;
 };
 
-interface CartContextType  {
+export interface CartContextType  {
   cartItems: CartItem[];
   addToCart: (item: CartItem) => void;
   removeFromCart: (item: CartItem) => void;

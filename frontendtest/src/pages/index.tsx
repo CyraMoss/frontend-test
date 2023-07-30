@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Head from "next/head";
 import Image from "next/image";
+import { CartContext, type CartItem } from "~/utils/cartContext";
+import { type CartContextType } from "~/utils/cartContext";
 
 interface ProductData {
   id: number;
@@ -13,6 +15,7 @@ interface ProductData {
 
 export default function ProductPage() {
   const [product, setProduct] = useState<ProductData | null>();
+  const { addToCart } = useContext<CartContextType>(CartContext);
 
   useEffect(() => {
     // Fetch product information from the API
@@ -28,6 +31,45 @@ export default function ProductPage() {
 
     void fetchProductDetails();
   }, []);
+
+  const handleAddToCart = () => {
+    console.log("add to cart clicked")
+    // Check if a size is selected (you might want to update this logic based on your actual size selection UI)
+    const selectedSize = product?.sizeOptions[0]?.label;
+    if (selectedSize && product) {
+      // Create the item object to add to the cart
+      const itemToAdd: CartItem = {
+        image: product.imageURL,
+        name: product.title,
+        price: product.price,
+        quantity: 1, // Set initial quantity to 1
+        size: selectedSize,
+      };
+
+      // Call the addToCart function from the CartContext to add the item to the cart
+      addToCart(itemToAdd);
+
+      setProduct((prevProduct) => {
+        if (prevProduct) {
+          const updatedSizeOptions = prevProduct.sizeOptions.map((sizeOption, index) => {
+            if (index === 0) {
+              return { ...sizeOption, selected: false };
+            }
+            return sizeOption;
+          });
+          return { ...prevProduct, sizeOptions: updatedSizeOptions };
+        }
+        return prevProduct;
+      });
+    } else {
+      // Show error message if no size is selected (you might want to handle this differently based on your UI)
+      const errorMessage = document.querySelector(".error-message");
+      if (errorMessage) {
+        errorMessage.textContent = "Please select a size.";
+      }
+    }
+  };
+
 
   return (
     <>
@@ -67,7 +109,9 @@ export default function ProductPage() {
                   ))}
                 </ul>
               </div>
-              <button className="border-2 border-black px-5 py-2">Add to Cart</button>
+              <button className="border-2 border-black px-5 py-2" onClick={handleAddToCart}>
+  Add to Cart
+</button>
               <div className="error-message"></div>
             </div>
           </div>
