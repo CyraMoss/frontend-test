@@ -109,8 +109,8 @@ export default function ProductPage() {
                 {product.sizeOptions.map((size) => (
                   <li
                     key={size.id}
-                    className={`p-4 m-2 border-2 border-black ${
-                      selectedSize?.id === size.id ? 'bg-blue-500' : ''
+                    className={`p-4 m-2 border-2 hover:opacity-30  ${
+                      selectedSize?.id === size.id ? 'text-black border-black' : 'border-gray-200 text-gray-400'
                     }`}
                     onClick={() => setSelectedSize(size)}
                   >
@@ -119,7 +119,7 @@ export default function ProductPage() {
                 ))}
               </ul>
     </div>
-    <button className="border-2 border-black px-5 py-2" onClick={handleAddToCart}>
+    <button className="border-2 border-black px-5 py-2 hover:opacity-30 transition duration-200" onClick={handleAddToCart}>
       Add to Cart
     </button>
     <div className="error-message text-red-600"></div>
